@@ -1,0 +1,6 @@
+name: MinecraftHUD
+version: '1.0-SNAPSHOT'
+main: Heyblock0712.minecraftHUD.MinecraftHUD
+api-version: '1.21'
+authors: [ HN ]
+description: is MinecraftHUD WAILA
