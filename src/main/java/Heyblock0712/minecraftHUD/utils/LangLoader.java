@@ -73,6 +73,10 @@ public class LangLoader {
     }
 
     public static String findFullKey(String simplifiedName) {
-        return langs.get(simplifiedName);
+        String name = langs.get(simplifiedName);
+        if (name != null) {
+            return name;
+        }
+        return simplifiedName;
     }
 }
