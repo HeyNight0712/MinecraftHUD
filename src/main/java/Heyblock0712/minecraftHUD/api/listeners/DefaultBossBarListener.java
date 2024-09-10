@@ -1,10 +1,10 @@
 package Heyblock0712.minecraftHUD.api.listeners;
 
 import Heyblock0712.minecraftHUD.api.event.BossBarEvent;
-import Heyblock0712.minecraftHUD.api.utils.Format;
-import Heyblock0712.minecraftHUD.utils.LangLoader;
+import Heyblock0712.minecraftHUD.api.utils.MinecraftLangManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -39,24 +39,32 @@ public class DefaultBossBarListener implements Listener {
             float healthRatio;
 
             AttributeInstance maxHealthAttribute = livingEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            String formatEntityName = Format.formatEntityName(targetEntity.getName());
-            String entityName = LangLoader.findFullKey(formatEntityName);
+            String key = "entity.minecraft." + targetEntity.getType();
+            String playerTranslation = event.getTargetLabel();
 
-            Component message = Component.text()
-                    .append(Component.text(entityName))
-                    .build();
+            Component customName = livingEntity.customName();
+            TextComponent.Builder builder = Component.text();
 
+            // Name
+            if (customName != null) {
+                builder.append(customName);
+            } else {
+                String translation = MinecraftLangManager.getTranslation(playerTranslation, key);
+                builder.append(Component.text(translation));
+            }
+
+            // HP
             if (maxHealthAttribute != null) {
                 double maxHealth = maxHealthAttribute.getValue();
                 healthRatio = (float) (currentHealth / maxHealth);
-                message = Component.text()
-                        .append(message)
+                builder
                         .append(Component.text("     ♥  ").color(NamedTextColor.RED))
-                        .append(Component.text((int) currentHealth + " / " + (int) maxHealth))
-                        .build();
+                        .append(Component.text((int) currentHealth + " / " + (int) maxHealth));
             } else {
                 healthRatio = 0f;
             }
+
+            Component message = builder.build();
 
             bossBar.overlay(BossBar.Overlay.NOTCHED_20);
             bossBar.color(BossBar.Color.RED);
@@ -67,9 +75,13 @@ public class DefaultBossBarListener implements Listener {
     }
 
     private void handleTargetBlock(BossBarEvent event, BossBar bossBar, Block targetBlock) {
+        String key = "block.minecraft." + targetBlock.getType();
+        String playerTranslation = event.getTargetLabel();
+        String translation = MinecraftLangManager.getTranslation(playerTranslation, key);
+
         bossBar.color(BossBar.Color.GREEN);
         bossBar.progress(1.0f);
-        bossBar.name(Component.text(LangLoader.findFullKey(targetBlock.getType().name().toLowerCase())));
+        bossBar.name(Component.text(translation));
         event.showBossBar(true);
     }
 }

@@ -1,5 +1,6 @@
 package Heyblock0712.minecraftHUD.api.event;
 
+import Heyblock0712.minecraftHUD.api.utils.MinecraftLangManager;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -37,6 +38,10 @@ public class BossBarEvent extends Event {
 
     public Entity getTargetEntity() {
         return player.getTargetEntity(5);
+    }
+
+    public String getTargetLabel() {
+        return MinecraftLangManager.toMinecraftLocale(player.locale());
     }
 
     public boolean isHandled() {
